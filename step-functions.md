@@ -209,23 +209,153 @@ We can invoke state machines asynchronously or synchronously depending on whethe
 Step Functions receive input in JSON format which is then passed to the different states in the state machine. We can configure different kinds of filters to manipulate data in each state both before and after the task processing as shown in this diagram:
 ![Input and Output Filters](images/in_out_filters.png)
 
-Let us understand how we can use these filters by applying them to the different states of the state machine of our order fulfillment process.
+Let us understand how we can use these filters by applying them to the different states of the state machine of our order fulfillment process. Let us suppose that our order processing workflow takes the following input:
 
-### Input Filters: InputPath and Parameters 
-We use the InputPath and Parameters fields to manipulate the data before task processing: 
+```json
+{
+    "order_processing_request": {
+        "customer": {
 
-{{% image alt="process input" src="images/posts/aws-step-function/process_input.png" %}}
-1. **InputPath**: The InputPath field takes a JSONPath attribute to extract only the parts of the input which is required by the state.
-2. **Parameters**: The Parameters field enables us to pass a collection of key-value pairs, where the values are either static values that we define in our state machine definition, or that are selected from the input using a path.
+        },
+        "item": {
+                "item_no": "I1234",
+                "num_of_items": 5,
+                "shipping_date": "23/12/2022",
+                "shipping_address": "address_1"
+        },
+        "order_details" : {
+                "order_id": "ORD345567",
+                "order_date": "15/12/2022"
+        }    
+    }
+}
+```
+The input data consists of information of the customer who has placed the order, the item for which the order is placed, and the order details. This input is fed to the first state: `check inventory`. The state machine will execute the lambda function: `check inventory` associated with this task.
 
-### Output Filters: OutputPath, ResultSelector, and ResultPath 
-We can further manipulate the results of the state execution using the fields: ResultSelector, ResultPath, and OutputPath:
-{{% image alt="process output" src="images/posts/aws-step-function/process_output.png" %}}
-1. **ResultSelector**: This field filters the task result to construct a new JSON object using selected elements of the task result.
-2. **ResultPath**: In most cases, we would like to retain the input data for processing by subsequent states of the state machine. For this, we use the ResultPath filter to add the task result to the original state input. 
-3. **OutputPath**: The OutputPath filter is used to select a portion of the effective state output to pass to the next state. It is often used with Task states to filter the result of an API response.
+Here is the code for the Lambda function for `check inventory`:
 
-We will next add these filters to manipulate the input data to our state machine for the `checkout` process at different stages. We will mainly manipulate the data to make prepare the requests for the different Lambda functions.
+```js
+exports.handler = async (event, context, callback) => {
+    const item_no = event.item_no
+    const num_of_items = event.num_of_items
+    console.log(`item::: ${item_no} ${num_of_items}`)
+    
+    const items_in_inventory = genItemsFromInventory(item_no)
+   
+   // TODO fetch inventory info from database
+    const inventory = {item_no: item_no, num_of_items_in_inventory: items_in_inventory}
+    
+    
+    callback(null, inventory)
+}
 
+function genItemsFromInventory(item_no) {  
+    var rand = Math.random()*100
+    var power = Math.pow(10, 0)
+    return Math.floor(rand*power)
+}
 
+```
+It takes the `item` information as input.
+We will prepare the input for the Lambda function using two filters:
+1. `InputPath`
+We have set this filter as `$.item`
+This filter will extract the `item` attribute from the input of the state machine. Here is the result of applying this filter:
+
+```json
+{
+    "item_no": "I1234",
+    "num_of_items": 5,
+    "shipping_date": "23/12/2022",
+    "shipping_address": "address_1"
+}
+```
+2. `Parameter`: This filter will prepare the input required by the Lambda function.
+```json
+{
+  "item_no.$": "$.item_no",
+  "num_of_items.$": "$.num_of_items"
+}
+
+```
+
+Here is the result of applying the filters `InputPath` and `Parameter` to the state input:
+
+```json
+{
+    "item_no": "I1234",
+    "num_of_items": 5
+}
+```
+
+This is the input payload which will be used by the state machine to execute the task associated with this state.
+The result of the execution of Lambda function: `checkInventory` is:
+```json
+{
+  "sku": "S0001",
+  "quantity_in_stock": 84,
+  "warehouse_no": "W001",
+  "age_of_stock_in_days": 98
+}
+```
+If we do not apply any more filters, this payload will be passed on to the next state. In that case we will lose the original input data containing `customer` and `order` information which will be required to execute the remaining states of the state machine. 
+For preserving the original input and extract the relevant fields from the task result, let us add some more filters:
+
+1. `ResultSelector`:
+
+2. `ResultPath`:
+
+3. `OutputPath`:
+
+The state `check inventory` after adding these filters looks like this:
+
+```json
+{
+  "Comment": "order processing",
+  "StartAt": "check inventory",
+  "States": {
+    "check inventory": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:us-east-1:926501103602:function:checkInventory:$LATEST",
+        "Payload": {
+          "item_no.$": "$.item_no",
+          "num_of_items.$": "$.num_of_items"
+        }
+      },
+      "Next": "items available?",
+      "InputPath": "$.order_processing_request.item",
+      "ResultSelector": {
+        "num_items_in_inventory.$": "$.Payload.quantity_in_stock",
+        "item_sku.$": "$.Payload.sku"
+      },
+      "ResultPath": "$.task_result"
+    },
+```
+
+## Handling Errors in Step Function Workflows
+In absence of any error handling, the execution of a state machine will fail whenever a state reports an error. States of type: `Task` provides options for configuring a retry and fallback for handling errors.
+
+### Retrying on Error
+We configure retry by defining one or more retry rules, called "retriers". This will allow the task to be retried for execution when errors occur during execution of the task.
+
+{{% image alt="Error handling Retry" src="images/posts/aws-step-function/retry-error.png" %}}
+Coming to our example, our Lambda function can encounter errors of type: `Lambda.ServiceException`, `Lambda.AWSLambdaException`, or `Lambda.SdkClientException`.
+To retry the task, when these errors occur, we have defined a `retrier` with the following retry settings:
+* **Interval**: The number of seconds before the first retry attempt. It can take values from `1` which is default to `99999999`.
+* **Max Attempts**: The maximum number of retry attempts. The task will not be retried after the number of retries exceeds this value. `MaxAttempts` has a default value of `3` and maximum value of `99999999`.
+* **Backoff Rate**: It is the multiplier by which the retry interval increases with each attempt.
+
+### FallBack to a Different State on Error
+We can catch and revert to a fallback state when errors occur by specifying one or more catch rules, called "catchers".
+{{% image alt="Error handling Retry" src="images/posts/aws-step-function/catch-error.png" %}}
+In this example, we are defining a `prepare error` state to which the `process payment` state can fall back if it encounters an error of type: `States.TaskFailed`.
+
+The state machine with a `catcher` defined for the `process payment` step looks like this in the visual editor.
+{{% image alt="Error handling catcher in workflow" src="images/posts/aws-step-function/workflow-with-catch.png" %}}
+
+### Handling Lambda Service Exceptions
+As a best practice, we should proactively handle transient service errors in AWS Lambda functions that result in a `500` error, such as `ServiceException`, `AWSLambdaException`, or `SdkClientException`. We can handle these exceptions by retrying the Lambda function invocation, or by catching the error.
 
