@@ -391,9 +391,9 @@ The state `check inventory` after adding these filters looks like this:
     },
 ```
 
-We can see the list of state machine executions with information such as execution id, status, and start date in the Step Functions console. 
+We can see the list of state machine executions with information such as `execution id`, `status`, and `start date` in the Step Functions console. 
 
-We can see a graph inspector on selecting an execution, that shows states and transitions marked with colors to indicate successful tasks, failures, and tasks that are still in progress. The graph inspector of our order fulfillment process is shown below:
+We can see a graph inspector on selecting an execution, that shows states and transitions marked with colors to indicate successful tasks, failures, and tasks that are still in progress. The graph inspector resulting from the execution of our order fulfillment workflow is shown below:
 
 ![Execution result](images/execution_result.png)
 
