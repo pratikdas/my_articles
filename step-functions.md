@@ -18,7 +18,7 @@ AWS Step functions use a State Machine to represent the workflow. A workflow con
 Fundamentally, a state machine is an abstract mathematical concept of representing the possible states of a system at a particular points in time. It has traditionally been used to model state transitions in Unified Modeling Language (UML) in the field of software engineering.
 
 We define the state machine of a Step Function in JSON format using a schema called Amazon States Language (ASL). A state machine for a sample loan approval workflow will look like this in the Workflow Studio:
-![Sample Workflow](images/order_fulfillment_workflow.png)
+![Sample Workflow](images/sample_wf.png)
 
 We can create two types of state machines: `Standard` and `Express`. The `Express` type is used for high-volume, event-processing workloads and can run for up to five minutes. The `Standard` type is the default and is used to create workflows for long-running, durable, and auditable processes. 
 
@@ -171,15 +171,15 @@ The corresponding definition of the state machine in the Amazon States Language 
   }
 }
 ```
-Our state machine definition in ASL contains a collection of `state` objects. It has the following mandatory fields:
-* `States`: This field contains a set of `state` objects. Each element of the set is a key-value pair with the name of the state as `key` and an associated `state` object as the value. 
-* `StartAt`: This field contains the name of one of the state objects in the `States` collection from where the state machine will start execution.
-
 This structure has the `States` field containing the collection of all the state objects with names like: `check inventory`, `cancel order`, `update inventory`, etc. The value of the field: `StartAt` is `check inventory` which means that the state machine starts execution from the state named `check inventory`.
 
 Each state object has a `Type` attribute for the type of the state and a `Next` attribute. The `Next` attribute contains the name of the next state that the state machine will execute. 
 
-Other attributes of the state object are dependent on the type of the state. In this example, for each of the states of type `Task`, we have defined an attribute `Resource` with a value of `arn:aws:states:::lambda:invoke` to represent the API to be called. 
+Other attributes of the state object are dependent on the type of the state. In this example, for each of the states of type `Task`, we have defined an attribute `Resource` with a value of `arn:aws:states:::lambda:invoke` to represent the API to be called. The `Resource` attribute takes an ARN of the AWS service to be invoked which has the format:
+`arn:aws:states:::aws-sdk:serviceName:apiAction.[serviceIntegrationPattern]`. The `serviceIntegrationPattern` suffix in this format can take one of the values:
+1. `.sync`: When we use `.sync` as the suffix, Step Functions wait for a request to complete before progressing to the next state.
+2. `.waitForTaskToken`: When we use this integration pattern, we can pause Step Functions indefinitely, and wait for an external process or workflow to complete
+3. Empty: If this suffix is omitted, the integration pattern is of type request-response which means the Step Functions wait for an HTTP response before progress to the next state. All our Lambda functions will be invoked in this way since we have not provided any suffix for `serviceIntegrationPattern` in the `Resource` attribute.
 
 We have defined the parameters of the API in an attribute `Parameters` which takes a set of key-value pairs. 
 
@@ -188,12 +188,14 @@ We can see the keys: `FunctionName` and `Payload.$`. The `FunctionName` key has 
 We will understand the passing and manipulation of the input and output by the various states during the execution of the state machine in the next section.
 
 ## Data Manipulation with Input and Output Filters
-We can invoke state machines asynchronously or synchronously depending on whether the type of workflow is `standard` or `express`. 
+We can invoke state machines asynchronously or synchronously depending on whether the type of workflow is `standard` or `express`. They can be invoked from the Step Functions console or the AWS Command Line Interface (CLI), or by calling the Step Functions API with the AWS SDKs. 
 
 Step Functions receive input in JSON format which is then passed to the different states in the state machine. We can configure different kinds of filters to manipulate data in each state both before and after the task processing as shown in this diagram:
 ![Input and Output Filters](images/in_out_filters.png)
 
-Let us understand how we can use these filters by applying them to the different states of the state machine of our order fulfillment process. Let us suppose that our order processing workflow takes the following input:
+Let us understand how we can use these filters by applying them to the different states of the state machine of our order fulfillment process. 
+
+Let us suppose that our order processing workflow takes the following input:
 
 ```json
 {
@@ -388,6 +390,12 @@ The state `check inventory` after adding these filters looks like this:
       "ResultPath": "$.task_result"
     },
 ```
+
+We can see the list of state machine executions with information such as execution id, status, and start date in the Step Functions console. 
+
+We can see a graph inspector on selecting an execution, that shows states and transitions marked with colors to indicate successful tasks, failures, and tasks that are still in progress. The graph inspector of our order fulfillment process is shown below:
+
+![Execution result](images/execution_result.png)
 
 ## Handling Errors in Step Function Workflows
 In absence of any error handling, the execution of a state machine will fail whenever a state reports an error. States of type: `Task` provides options for configuring a retry and fallback for handling errors.
