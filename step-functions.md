@@ -188,6 +188,10 @@ The corresponding definition of the state machine in the Amazon States Language 
   }
 }
 ```
+Our state machine definition in ASL contains a collection of `state` objects. It has the following mandatory fields:
+* `States`: This field contains a set of `state` objects. Each element of the set is a key-value pair with the name of the state as `key` and an associated `state` object as the value. 
+* `StartAt`: This field contains the name of one of the state objects in the `States` collection from where the state machine will start execution.
+
 This structure has the `States` field containing the collection of all the state objects with names like: `check inventory`, `cancel order`, `update inventory`, etc. The value of the field: `StartAt` is `check inventory` which means that the state machine starts execution from the state named `check inventory`.
 
 Each state object has a `Type` attribute for the type of the state and a `Next` attribute. The `Next` attribute contains the name of the next state that the state machine will execute. 
@@ -201,4 +205,27 @@ We can see the keys: `FunctionName` and `Payload.$`. The `FunctionName` key has 
 We will understand passing and manipulation of the input and output by the various states during execution of the state machine in the next section.
 
 ## Data Manipulation with Input and Output Filters
+We can invoke state machines asynchronously or synchronously depending on whether the type of workflow is `standard` or `express`. 
+Step Functions receive input in JSON format which is then passed to the different states in the state machine. We can configure different kinds of filters to manipulate data in each state both before and after the task processing as shown in this diagram:
+![Input and Output Filters](images/in_out_filters.png)
+
+Let us understand how we can use these filters by applying them to the different states of the state machine of our order fulfillment process.
+
+### Input Filters: InputPath and Parameters 
+We use the InputPath and Parameters fields to manipulate the data before task processing: 
+
+{{% image alt="process input" src="images/posts/aws-step-function/process_input.png" %}}
+1. **InputPath**: The InputPath field takes a JSONPath attribute to extract only the parts of the input which is required by the state.
+2. **Parameters**: The Parameters field enables us to pass a collection of key-value pairs, where the values are either static values that we define in our state machine definition, or that are selected from the input using a path.
+
+### Output Filters: OutputPath, ResultSelector, and ResultPath 
+We can further manipulate the results of the state execution using the fields: ResultSelector, ResultPath, and OutputPath:
+{{% image alt="process output" src="images/posts/aws-step-function/process_output.png" %}}
+1. **ResultSelector**: This field filters the task result to construct a new JSON object using selected elements of the task result.
+2. **ResultPath**: In most cases, we would like to retain the input data for processing by subsequent states of the state machine. For this, we use the ResultPath filter to add the task result to the original state input. 
+3. **OutputPath**: The OutputPath filter is used to select a portion of the effective state output to pass to the next state. It is often used with Task states to filter the result of an API response.
+
+We will next add these filters to manipulate the input data to our state machine for the `checkout` process at different stages. We will mainly manipulate the data to make prepare the requests for the different Lambda functions.
+
+
 
