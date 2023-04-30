@@ -21,16 +21,37 @@ The agent must run on every node that is part of a Consul cluster.
 
 Agents run in either client or server mode. Client nodes are lightweight processes that make up the majority of the cluster. They interfa
 
-## Starting the Consul agent
+## Starting the Consul Server agent
+Let us create 2 directories:
+Directory for config: consul/config
+Directory for data: consul/data
+Name of datacenter
+Name of domain: 
+Https port:8443
+DNS Port: 8600
+DNS Recursor: 1.1.1.1
 
 Start a Consul agent with the consul command and agent subcommand using the following syntax:
 
 ```shell
-$ consul agent <options>
+$ consul agent -dev
 ```
 
 Consul ships with a -dev flag that configures the agent to run in server mode and several additional settings that enable you to quickly get started with Consul. The -dev flag is provided for learning purposes only. We strongly advise against using it for production environments.
 
+```shell
+==> Starting Consul agent...
+              Version: '1.15.2'
+           Build Date: '2023-03-30 17:51:19 +0000 UTC'
+              Node ID: '2ac840b1-b0fb-60bd-ef7d-3c53058cc04a'
+            Node name: 'ip-172-31-57-153.eu-central-1.compute.internal'
+           Datacenter: 'dc1' (Segment: '<all>')
+               Server: true (Bootstrap: false)
+          Client Addr: [127.0.0.1] (HTTP: 8500, HTTPS: -1, gRPC: 8502, gRPC-TLS: 8503, DNS: 8600)
+         Cluster Addr: 127.0.0.1 (LAN: 8301, WAN: 8302)
+```
+They also report that the agent is running as a server and has claimed leadership
+## Registering Services Starting the Consul Client agent
 ## Join the Agent to the Cluster
 
 Consul is available as a binary. Let us install consul in 3 aws ec2 instances.
