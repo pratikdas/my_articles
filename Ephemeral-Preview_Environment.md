@@ -1,3 +1,4 @@
+Building Ephemeral Test Environments for concurrent Testing
 ## Key Takeaways
 
 * An Ephemeral environment is used to test our applications by spinning up the environment at the time of testing and destroying it thereafter.
@@ -8,7 +9,15 @@
 
 In this article, we will understand the concepts of ephemeral environments, when they are most useful and the different ways of setting them up.
 
+## What do we aim for in our Test Environments
+Some of the things we aim for in our test environment are:
+**Isolation**: The environment is isolated from other set of changes
+**Applications**: The applications in our dependency graph are present
+**Tied to a feature branch**: They are tied to a feature branch
+
 ## Challenges of Static Environments
+Advantage: Production like
+Shared
 
 ## Introducing Ephemeral Environment
 
