@@ -16,6 +16,8 @@ Once they are happy with their changes they promote it to a series of higher env
 The process of promotion is usually creating a Pull request which is reviewed and merged to a release branch. Let us look at few of the challenges with these environments.
 
 ## Challenges of Static Environments: Dev, SIT, UAT, Prod
+Ephemeral environments replace traditionally used static shared environments like integration or staging environments. Shared environments worked well in the past when usually 1 big monolithic application was present with probably a database. Once we broke down this monolith into several microservices and multiple teams wait for the other team to finish testing their changes.  working on those  But teams often face challenges of instability and limited availability due to the deployment of breaking changes by other teams or if a release is already being tested.
+
 **Test multiple versions in parallel**: I can test 1 version at a time. If two teams are working in parallel on the same source code on multiple features, only one team can deploy their changes and the other team has to wait for the environment to be available.
 **Environment Stability**: Due to multiple teams deploying at the same time, the changes deployed by one team might inadvertantly break the dependent application.
 
