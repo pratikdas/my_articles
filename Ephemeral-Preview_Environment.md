@@ -10,10 +10,12 @@ Building Ephemeral Test Environments for concurrent Testing
 In this article, we will understand the concepts of ephemeral environments, when they are most useful and the different ways of setting them up.
 
 ## A typical workflow Traditional Static Environments: Dev, SIT, UAT, Prod
-Developers checkout code from source control repository
-They write code and test in a local dev environment which is usually their desktops where the application runs
-Once they are happy with their changes they promote it to a series of higher environments like SIT, UAT/pre-prod and eventually to production.
-The process of promotion is usually creating a Pull request which is reviewed and merged to a release branch. Let us look at few of the challenges with these environments.
+- Developers checkout code from source control repository
+- They write code and test in a local dev environment which is usually their desktops where the application runs
+- Once they are happy with their changes they promote it to a series of higher environments like SIT, UAT/pre-prod and eventually to production.
+- The process of promotion is usually creating a Pull request which is reviewed and merged to a release branch. 
+
+Let us look at few of the challenges with these environments.
 
 ## Challenges of Static Environments: Dev, SIT, UAT, Prod
 Ephemeral environments replace traditionally used static shared environments like integration or staging environments. Shared environments worked well in the past when usually 1 big monolithic application was present with probably a database. Once we broke down this monolith into several microservices and multiple teams wait for the other team to finish testing their changes.  working on those  But teams often face challenges of instability and limited availability due to the deployment of breaking changes by other teams or if a release is already being tested.
@@ -25,21 +27,23 @@ These are some of the challenges we try to address by adopting ephemeral or dyna
 
 ## Introducing Ephemeral Environment
 An ephemeral environment as the name suggests is a temporary short lived environment. It is also called dynamic or preview environments. It consists of infrastructure and a full stack of applications required for .  These are similar to docker containers but extended to a collection of applications. And instead, it only exists for a defined period of time. An environment is a collection of infrastructure or services to enable someone whether it be a development team or otherwise to deploy their components or applications into. 
+
 Some of the features of an ephemeral environment are:
-**Tied to a branch**: They are tied to a feature branch
-**Isolation**: The environment is isolated from other set of changes
-**Infrastructure**: The infrastructure used for running the environment is also spun up on demand.
-**Applications**: The applications in our dependency graph are present
+- **Tied to a branch**: They are tied to a feature branch
+- **Isolation**: The environment is isolated from other set of changes
+- **Infrastructure**: The infrastructure used for running the environment is also spun up on demand.
+- **Applications**: The applications in our dependency graph are present
 
 ## Setting up Ephemeral Environment
 
 
 ## When do we spin up an Ephemeral Environment
-Provision a lighter development environment: Spun up by developers with only the dependent systems required by the application they need to work on. Advantage of solving "it runs on my machine" syndrome. Similar to Docker containers but extened to a collection of systems.
-Provision a integration environment: Spun up by developers for testing in a production like environment
-Provisioned by QA teams: To test a feature for functional testing.
-Business teams
-Performance testing
+- Provision a lighter development environment: Spun up by developers with only the dependent systems required by the application they need to work on. Advantage of solving "it runs on my machine" syndrome. Similar to Docker containers but extened to a collection of systems.
+
+- Provision an integration environment: Spun up by developers for testing in a production like environment
+- Provisioned by QA teams: To test a feature for functional testing.
+- Business teams
+- Performance testing
 
 ## Tools & Techniques
 CI/CD Pipelines:
