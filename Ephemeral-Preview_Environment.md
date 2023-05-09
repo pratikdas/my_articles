@@ -46,8 +46,12 @@ Some of the features of an ephemeral environment are:
 - Performance testing
 
 ## Tools & Techniques
+IaC:
 CI/CD Pipelines:
 Kubernetes Operator:
+
+Completely Isolated stack
+Sharing common dependencies. Traffic rerouting
 ## Complexities
 Dependencies:
 
