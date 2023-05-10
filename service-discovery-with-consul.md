@@ -30,7 +30,8 @@ Agents run in either client or server mode. Client nodes are lightweight process
 
 
 This encryption key generated is set as the value for the "encrypt" key in the server and client configuration files.
-## Starting the Consul Server agent
+
+## Starting the Consul agent
 Let us create 2 directories:
 Directory for config: consul/config
 Directory for data: consul/data
@@ -93,7 +94,7 @@ Consul uses a shared secret for implementing the gossip protocol. The shared sec
 ```shell
 consul keygen
 ```
-## Registering Services Starting the Consul Client agent
+## Registering Services in Consul
 
 ## Join the Agent to the Cluster
 
@@ -104,15 +105,18 @@ Start the agent
 Launch the UI on port 8500.
 
 
-## Registering Services
- registering services on startup because the service persists if the agent fails. Specify the directory containing the service definition with the -config-dir option on startup. When the Consul agent starts, it processes all configurations in the directory and registers any services contained in the configurations. 
+## Registering Services in Consul
+Registering services on startup because the service persists if the agent fails. Specify the directory containing the service definition with the -config-dir option on startup. When the Consul agent starts, it processes all configurations in the directory and registers any services contained in the configurations. 
 ```shell
 consul agent -config-dir configs
 ```
 In the following example, the Consul agent starts and loads the configurations contained in the configs directory.
 
-## Discovering Services
-Services can be discovered either sing HTTP API or using DNS.
+## Discovering Services From Consul
+Services can be discovered either by using the HTTP API or using DNS.
+
+### Look up via HTTP
+
 ### Look up via DNS
 DNS is a canonical way to discover services. While Consul provides basic DNS services, the integration with other DNS services like NS1 allows for service discovery to occur over their advanced DNS network. 
 The DNS interface allows applications to make use of service discovery without any high-touch integration with Consul.
@@ -123,6 +127,6 @@ There are a few ways to use the DNS interface:
 2. Set Consul as the DNS server for a node:Provide a recursors configuration so that non-Consul queries can also be resolved.
 3. Forward all DNS queries for the "consul." domain to a Consul agent from the existing DNS server
 ## Conclusion
-In this article, we looked at the main concepts of AWS Step Function and used those to define a workflow for an Order Fulfillment process. Here are the main points from the article for quick reference:
+In this article, we looked at the main concepts of HashiCorp Consul. We understood how to set up the cluster, register services and discover service endpoints.
 
 
