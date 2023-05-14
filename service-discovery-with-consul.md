@@ -1,6 +1,6 @@
 ## Key Takeaways
 
-* Service discovery is the mechanism by which a service finds out the endpoints of dependent services and uses that to invoke those services.
+* Service discovery is the mechanism of locating the endpoints of services present within a network.
 * Consul is a product from HashiCorp with service discovery as one of its main capabilities
 * Datacenters, Clusters, and Agents are some key concepts of Consul architecture. 
 * A datacenter is the smallest unit of infrastructure that can perform basic Consul operations.Agents are daemons created when we run the consul binary. They can be run as server and client. A collection of server and client agents form a cluster.
@@ -10,13 +10,20 @@
 * We can use DNS to reach services registered with Consul or modify your application to natively consume the Consul service discovery HTTP APIs.
 
 In this article, we will understand the concepts of service discovery using HashiCorp Consul with the help of some examples.
-
 ## Why do we need Service Discovery
+A typical infrastructure consists of resources of all kinds
 We rarely work with fixed IPs these days. Resources spun up dynamically and have an IP allocated. Traditionally we used Load Balancer with a DNS which was front ending a collection of resources. Using a Load Balancer is costly in terms of money, configuration and performance. Consul takes a different appproach. It uses looks up a registry to find the service endpoint and makes a direct call using that endpoint address. Consul also has service mesh capabilities. It can be injected as a side car in kubernetes pod and allows the microservice to communicate to other microservices using the side car proxy. In this article we will look at how consul works with services deployed in VMs.
+## Our Discoverable Assets
+VMs
+Services running on VMs
+Microservice apps in Kubernetes cluster
 
-## Consul infrastructure is a Cluster of nodes
+All of these have endpoints. Each endpoint has a IP or DNS name and a port.
+In the next section we will see how Consul helps to discover these endpoints 
+## How is Consul used for Service Discovery 
+Our 
 The Consul infrastructure is set up in a Cluster as a collection of nodes. For the timebeing consider a node as a VM for simplicity. Each node runs a process called Consul agent. When we running consul, we actually run the consul agent in a VM. The Consul can span across multiple data centers and for delivering a scalable, highly available, abstract, and resilient service mesh infrastructure. A Consul deployment may span multiple zones or even regions in a public cloud environment.
-
+## Spining up a Consul Infrastructure
 ## Introducing Consul Agent- the Core Process of Consul
 Consul agent is the core process of Consul. The main functions of an agent are:  
 - maintaining membership information, 
