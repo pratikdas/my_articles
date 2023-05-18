@@ -3,28 +3,37 @@
 * Service discovery is the mechanism of locating the endpoints of services present within a network.
 * Consul is a product from HashiCorp with service discovery as one of its main capabilities
 * Datacenters, Clusters, and Agents are some key concepts of Consul architecture. 
-* A datacenter is the smallest unit of infrastructure that can perform basic Consul operations.Agents are daemons created when we run the consul binary. They can be run as server and client. A collection of server and client agents form a cluster.
-* Client and server agents participate in a LAN gossip pool so that they can distribute and perform node health checks.
-* We define services in a configuration file and upload that to an agent to register the services.
 * The Consul DNS is the primary interface for discovering services registered in the Consul catalog.
 * We can use DNS to reach services registered with Consul or modify your application to natively consume the Consul service discovery HTTP APIs.
 
 In this article, we will understand the concepts of service discovery using HashiCorp Consul with the help of some examples.
+
+## What is Service Discovery
+Service discovery is how applications and services locate each other on a network. Implementations of service discovery include both a central server that maintain a global view of addresses and clients that connect to the central server to update and retrieve addresses.
+
 ## Why do we need Service Discovery
 A typical infrastructure consists of resources of all kinds
 We rarely work with fixed IPs these days. Resources spun up dynamically and have an IP allocated. Traditionally we used Load Balancer with a DNS which was front ending a collection of resources. Using a Load Balancer is costly in terms of money, configuration and performance. Consul takes a different appproach. It uses looks up a registry to find the service endpoint and makes a direct call using that endpoint address. Consul also has service mesh capabilities. It can be injected as a side car in kubernetes pod and allows the microservice to communicate to other microservices using the side car proxy. In this article we will look at how consul works with services deployed in VMs.
-## Our Discoverable Assets
+
 VMs
 Services running on VMs
 Microservice apps in Kubernetes cluster
 
 All of these have endpoints. Each endpoint has a IP or DNS name and a port.
 In the next section we will see how Consul helps to discover these endpoints 
+
 ## How is Consul used for Service Discovery 
-Our 
+
 The Consul infrastructure is set up in a Cluster as a collection of nodes. For the timebeing consider a node as a VM for simplicity. Each node runs a process called Consul agent. When we running consul, we actually run the consul agent in a VM. The Consul can span across multiple data centers and for delivering a scalable, highly available, abstract, and resilient service mesh infrastructure. A Consul deployment may span multiple zones or even regions in a public cloud environment.
+
 ## Spining up a Consul Infrastructure
-## Introducing Consul Agent- the Core Process of Consul
+The primary Components of Consul Infrastructure are dc, cluster, agents.
+A datacenter is the smallest unit of infrastructure that can perform basic Consul operations.Agents are daemons created when we run the consul binary. They can be run as server and client. A collection of server and client agents form a cluster.
+* Client and server agents participate in a LAN gossip pool so that they can distribute and perform node health checks.
+* We define services in a configuration file and upload that to an agent to register the services.
+* 
+
+### Consul Agent- the Core Process of Consul
 Consul agent is the core process of Consul. The main functions of an agent are:  
 - maintaining membership information, 
 - registering services 
@@ -38,7 +47,7 @@ Agents run in either client or server mode. Client nodes are lightweight process
 
 This encryption key generated is set as the value for the "encrypt" key in the server and client configuration files.
 
-## Starting the Consul agent
+## Starting the Consul Server
 Let us create 2 directories:
 Directory for config: consul/config
 Directory for data: consul/data
@@ -102,6 +111,7 @@ Consul uses a shared secret for implementing the gossip protocol. The shared sec
 consul keygen
 ```
 ## Registering Services in Consul
+Registration can be done by calling the consul HTTP API
 
 ## Join the Agent to the Cluster
 
@@ -133,6 +143,7 @@ There are a few ways to use the DNS interface:
 1. Using a custom DNS resolver library: point it at Consul.
 2. Set Consul as the DNS server for a node:Provide a recursors configuration so that non-Consul queries can also be resolved.
 3. Forward all DNS queries for the "consul." domain to a Consul agent from the existing DNS server
+4. 
 ## Conclusion
 In this article, we looked at the main concepts of HashiCorp Consul. We understood how to set up the cluster, register services and discover service endpoints.
 
