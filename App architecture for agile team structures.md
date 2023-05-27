@@ -7,6 +7,8 @@ The spotify model is built around the concept of goving maximum autonomy to the 
 Application Architecture
 Squad 1 works on 2 m
 
+In this article we look at some of the architecture decisions teams can take to manage the dependencies between squads.
+
 ## Isolate first and Consolidation
 Microservice architecture with one microservice owned by atmost 1 squad. 
 
