@@ -1,4 +1,7 @@
 ## Org design 
+Organization redesign is an essential component of most modernization programs. At a broad level it includes creating new roles, and restructuring existing teams with the objective of bringing in efficiency. Agile is one of the common guiding principle which gives the teams autonomy. The spotify model of tribes and squads is also adopted by many orgs albeit with differing terminologies. But the common principle continues to be building autonomous teams. This article however looks at the business and technical architecture which is not addressed may lead to failure of the model despite the best intentions of reorganization.
+
+An org consists of several systems. Old system have one or more monoliths which are broken into smaller managable components during modernization. 
 
 ## What is an Autonomous Team Looks like
 
