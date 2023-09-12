@@ -17,8 +17,21 @@ In IT Operations, Anomaly Detection is a fundamental Building Blocks of AIOps â€
 ## What kind of metrics
 Anomaly detection assists with visualizing and monitoring metrics that have predictable patterns. For example, my_site.page_views{*} is driven by user traffic and varies predictably by time of day and day of week. 
 
-## Collecting data
+## Types of anomalous data
 The major sources of data are logs and metrics. We use various types of log agents to collect the data.
+
+## Data preparation
+Log parsing
+data aggregation
+data normalization
+Grouping
+
+## Supervised approaches
+
+## UnSupervised approaches
+
+
+
 
 ## How APM tools help 
 Type of alert
