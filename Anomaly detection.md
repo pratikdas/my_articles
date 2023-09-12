@@ -1,9 +1,11 @@
-# ML for Anomaly detection algorithms
+# Anomaly detection in AIOps for faster incident investigations
 
 ## Key Takeaways
-- “AIOps” stands for “artificial intelligence for IT operations.” Originally coined by Gartner in 2017, it refers to the way data and information from an application environment are managed by an IT team
+- Anomaly detection with AIOps helps to speed up the process of looking for anomalies in a huge volume and variety of logs and system metrics from distributed sytems that could be responsible for an incident.
+- “AIOps” stands for “artificial intelligence for IT operations.” Originally coined by Gartner in 2017, it refers to leveraging the data from an application environment using AI ML.
 - Anomaly Detection is a fundamental Building Blocks of AIOps traditionally focused on avoiding system disruption.
-- Scale observability from one system to the thousands of systems enterprises today tend to have and you have a data problem that humans cannot analyze. 
+- Most observability products support anomaly detection to varying degrees
+- Here we look into the process of setting up anomaly detection in an IT environment thru data collection, normalization, grouping, and applying ML algorithms to detect anomalies.
 
 ## What is Anomaly detection
 In IT Operations, Anomaly Detection is a fundamental Building Blocks of AIOps – Artificial Intelligence in IT Operations. IT Operations is essentially about ensuring SLAs and the availability of IT systems. Hence, Anomaly Detection in IT Operations traditionally tends to be focused on avoiding system disruption.
@@ -14,6 +16,8 @@ In IT Operations, Anomaly Detection is a fundamental Building Blocks of AIOps �
 
 ## What kind of metrics
 Anomaly detection assists with visualizing and monitoring metrics that have predictable patterns. For example, my_site.page_views{*} is driven by user traffic and varies predictably by time of day and day of week. 
+
+## Collecting data
 
 ## How APM tools help 
 Type of alert
