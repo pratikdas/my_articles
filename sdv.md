@@ -5,3 +5,4 @@ SDV: Car functions are primarily defined by Software with OTA.
 EE architectures:
 Domain architecture
 Zonal architecture
+EE architectures are crucial to designing SDV. ECUs are at the core. ECU based on functions. Mostly used in ADAS. Now for other non-safety functions.
